@@ -37,8 +37,10 @@
     function setTime(timeZone = 0) {
       date.setTime(timeZone + Date.now());
 
+      console.log((date.getTimezoneOffset() / 60));
+
       if((date.getTimezoneOffset() / 60) > 0) {
-        date.setHours(date.getHours() - (date.getTimezoneOffset()/60) + 3)
+        date.setHours(date.getHours() + (date.getTimezoneOffset()/60) + 3)
       } else {
         date.setHours((date.getTimezoneOffset()/60) + date.getHours() + 3)
       }

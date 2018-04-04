@@ -36,6 +36,14 @@
 
     function setTime(timeZone = 0) {
       date.setTime(timeZone + Date.now());
+
+      if((date.getTimezoneOffset() / 60) > 0) {
+        date.setHours(date.getHours() - (date.getTimezoneOffset()/60) + 3)
+      } else {
+        date.setHours((date.getTimezoneOffset()/60) + date.getHours() + 3)
+      }
+
+
       let hours = date.getHours();
       let minutes = date.getMinutes();
       let seconds = date.getSeconds();

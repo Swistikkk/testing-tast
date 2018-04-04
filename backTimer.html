@@ -39,7 +39,6 @@
     }
 
     document.querySelector('.setTime').addEventListener('change', event => {
-      console.log(event.target.name);
       if (event.target.name === "hours" || event.target.name === "minutes" || event.target.name === "seconds") {
         timerTimeBack[event.target.name] = event.target.value;
       }
@@ -50,10 +49,11 @@
         if(timerTimeBack.seconds == 0) {
           if(timerTimeBack.minutes == 0) {
             if(timerTimeBack.hours == 0) {
-              console.log('Time is end!');
+              clearInterval(timerStart);
+              alert('Time is end!');
             }
             timerTimeBack.hours -= 1;
-            timerTimeBack.minutes = 59;
+            timerTimeBack.minutes = 60;
           }
           timerTimeBack.minutes -= 1;
           timerTimeBack.seconds = 59;

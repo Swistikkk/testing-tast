@@ -7,12 +7,12 @@
 <body>
 
   <div>
-    <span class="date"></span>
-    <span class="hours"></span>
+    <span class="date">Дата загружается...</span>
+    <span class="hours">00</span>
     <span>:</span>
-    <span class="minutes"></span>
+    <span class="minutes">00</span>
     <span>:</span>
-    <span class="seconds"></span>
+    <span class="seconds">00</span>
 
     <select class="selectTime">
       <option value="msk">Moscow</option>
@@ -22,37 +22,33 @@
 
 
   <script>
-    var date = new Date();
-    let timer = setInterval(() => {
-      setTime();
-    }, 1000);
+    var dateFromServer = 0;
+    let timer;
 
-    function changeTime(value) {
+    function changeTime(value = 0, city = "msk") {
       clearInterval(timer);
+
+      if (city === "msk") dateFromServer -= 7*60*60*1000;
+
+      dateFromServer += value;
       timer = setInterval(() => {
-        setTime(value);
-      });
+        setTime();
+      }, 1000);
     }
 
-    function setTime(timeZone = 0, isLoad = false, dateBack) {
-      let promise;
-      if (!isLoad) promise = fetch("http://api.timezonedb.com/v2/get-time-zone?key=JKYQ5KT4212A&format=json&by=zone&zone=Europe/Moscow")
-      .then((date) => date.json())
-      .then(time => {
-        console.log(time);
-        let date = new Date(timeZone + time.timestamp * 1000 - 3*60*60*1000);
-
-        drowTime(date);
-        setTime(timeZone = 0, isLoad = false, date);
-      });
-      else {
-        drowTime(dateBack);
-        return setTime(timeZone, isLoad = true, dateBack = (date + 1000));
-      }
-
+    function setTime(timeZone = 0) {
+        dateFromServer += 1000;
+        drowTime(dateFromServer);
     }
 
-    function drowTime(date) {
+    function loadServerTime() {
+      return fetch("http://api.timezonedb.com/v2/get-time-zone?key=JKYQ5KT4212A&format=json&by=zone&zone=Europe/Moscow")
+      .then(date => date.json())
+      .then(time => { dateFromServer = time.timestamp * 1000 - 3 * 60 * 60 * 1000})
+    }
+
+    function drowTime(time = 0) {
+      let date = new Date(time);
       let hours = date.getHours();
       let minutes = date.getMinutes();
       let seconds = date.getSeconds();
@@ -63,10 +59,14 @@
     }
 
     document.querySelector('.selectTime').addEventListener('change', (event) => {
-      event.target.value === 'msk' ? changeTime() : changeTime(7 * 60 * 60 * 1000);
+      event.target.value === 'msk' ? changeTime(0, event.target.value) : changeTime(7 * 60 * 60 * 1000, event.target.value);
     });
 
-    setTime();
+    loadServerTime().then(() => {
+      timer = setInterval(() => {
+        setTime();
+      }, 1000);
+    });
   </script>
 </body>
 </html>

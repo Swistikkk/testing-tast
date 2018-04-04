@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+
+  <div>
+    <span class="date"></span>
+    <span class="hours"></span>
+    <span>:</span>
+    <span class="minutes"></span>
+    <span>:</span>
+    <span class="seconds"></span>
+
+    <select class="selectTime">
+      <option value="msk">Moscow</option>
+      <option value="vladivostok">Vladivostok</option>
+    </select>
+  </div>
+
+
+  <script>
+    let date = new Date();
+    let timer = setInterval(() => {
+      setTime();
+    }, 1000);
+
+    function changeTime(value) {
+      clearInterval(timer);
+      timer = setInterval(() => {
+        setTime(value);
+      });
+    }
+
+    function setTime(timeZone = 0) {
+      date.setTime(timeZone + Date.now());
+      let hours = date.getHours();
+      let minutes = date.getMinutes();
+      let seconds = date.getSeconds();
+      document.querySelector('.date').innerHTML = date.toDateString();
+      document.querySelector('.hours').innerHTML = hours;
+      document.querySelector('.minutes').innerHTML = minutes;
+      document.querySelector('.seconds').innerHTML = seconds;
+    }
+
+    document.querySelector('.selectTime').addEventListener('change', (event) => {
+      event.target.value === 'msk' ? changeTime() : changeTime(7 * 60 * 60 * 1000);
+    });
+
+    setTime();
+  </script>
+</body>
+</html>

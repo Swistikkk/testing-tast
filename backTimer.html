@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Таймер обратного отсчета</title>
+  <style>
+    .setTime_text { width: 75px; display: inline-block;}
+  </style>
+</head>
+<body>
+
+  <div>
+    <span class="hours">00</span>
+    <span>:</span>
+    <span class="minutes">00</span>
+    <span>:</span>
+    <span class="seconds">00</span>
+  </div>
+
+  <div class="setTime">
+    <span class="setTime_text">Часы:</span>
+    <input type="number" name="hours" placeholder="00" max="24"/>
+    <br/>
+    <span class="setTime_text">Минуты:</span>
+    <input type="number" name="minutes" placeholder="00" max="59" />
+    <br/>
+    <span class="setTime_text">Секунды:</span>
+    <input type="number" name="seconds" placeholder="00" max="59" />
+    <br/>
+    <button class="start">Запустить таймер</button>
+  </div>
+
+
+  <script>
+    let timerTimeBack = { hours: 0, minutes: 0, seconds: 0 };
+
+    function addZero(value) {
+      return value < 10 ? ("0" + value) : value;
+    }
+
+    document.querySelector('.setTime').addEventListener('change', event => {
+      console.log(event.target.name);
+      if (event.target.name === "hours" || event.target.name === "minutes" || event.target.name === "seconds") {
+        timerTimeBack[event.target.name] = event.target.value;
+      }
+    });
+
+    document.querySelector('.start').addEventListener('click', () => {
+      timerStart = setInterval(() => {
+        if(timerTimeBack.seconds == 0) {
+          if(timerTimeBack.minutes == 0) {
+            if(timerTimeBack.hours == 0) {
+              console.log('Time is end!');
+            }
+            timerTimeBack.hours -= 1;
+            timerTimeBack.minutes = 59;
+          }
+          timerTimeBack.minutes -= 1;
+          timerTimeBack.seconds = 59;
+        }
+        else timerTimeBack.seconds -= 1;
+
+        document.querySelector('.hours').innerHTML = addZero(timerTimeBack.hours);
+        document.querySelector('.minutes').innerHTML = addZero(timerTimeBack.minutes);
+        document.querySelector('.seconds').innerHTML = addZero(timerTimeBack.seconds);
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

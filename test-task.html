@@ -28,9 +28,9 @@
     function changeTime(value = 0, city = "msk") {
       clearInterval(timer);
 
-      if (city === "msk") dateFromServer -= 7*60*60*1000;
+      if(city !== "msk") dateFromServer += value;
+      else dateFromServer -= 7 * 60 * 60 * 1000;
 
-      dateFromServer += value;
       timer = setInterval(() => {
         setTime();
       }, 1000);
@@ -38,13 +38,14 @@
 
     function setTime(timeZone = 0) {
         dateFromServer += 1000;
+        console.log(dateFromServer);
         drowTime(dateFromServer);
     }
 
     function loadServerTime() {
       return fetch("http://api.timezonedb.com/v2/get-time-zone?key=JKYQ5KT4212A&format=json&by=zone&zone=Europe/Moscow")
       .then(date => date.json())
-      .then(time => { dateFromServer = time.timestamp * 1000 - 3 * 60 * 60 * 1000})
+      .then(time => {dateFromServer = Date.parse(time.formatted)})
     }
 
     function drowTime(time = 0) {

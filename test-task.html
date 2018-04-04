@@ -22,7 +22,7 @@
 
 
   <script>
-    let date = new Date();
+    var date = new Date();
     let timer = setInterval(() => {
       setTime();
     }, 1000);
@@ -34,18 +34,25 @@
       });
     }
 
-    function setTime(timeZone = 0) {
-      date.setTime(timeZone + Date.now());
+    function setTime(timeZone = 0, isLoad = false, dateBack) {
+      let promise;
+      if (!isLoad) promise = fetch("http://api.timezonedb.com/v2/get-time-zone?key=JKYQ5KT4212A&format=json&by=zone&zone=Europe/Moscow")
+      .then((date) => date.json())
+      .then(time => {
+        console.log(time);
+        let date = new Date(timeZone + time.timestamp * 1000 - 3*60*60*1000);
 
-      console.log((date.getTimezoneOffset() / 60));
-
-      if((date.getTimezoneOffset() / 60) > 0) {
-        date.setHours(date.getHours() + (date.getTimezoneOffset()/60) + 3)
-      } else {
-        date.setHours((date.getTimezoneOffset()/60) + date.getHours() + 3)
+        drowTime(date);
+        setTime(timeZone = 0, isLoad = false, date);
+      });
+      else {
+        drowTime(dateBack);
+        return setTime(timeZone, isLoad = true, dateBack = (date + 1000));
       }
 
+    }
 
+    function drowTime(date) {
       let hours = date.getHours();
       let minutes = date.getMinutes();
       let seconds = date.getSeconds();
